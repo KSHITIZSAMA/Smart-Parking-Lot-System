@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Parking Lot Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts - Classic serif and professional fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Classic Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-parking"></i>
+                <span>Smart Parking Management</span>
+            </div>
+            <div class="nav-info">
+                <span class="datetime" id="currentDateTime"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fas fa-chart-pie"></i> Statistics</h3>
+                <div class="stats-box">
+                    <div class="stat-item">
+                        <div class="stat-icon total">
+                            <i class="fas fa-th"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Slots</span>
+                            <span class="stat-value" id="totalSlots">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon available">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Available</span>
+                            <span class="stat-value" id="availableSlots">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon occupied">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Occupied</span>
+                            <span class="stat-value" id="occupiedSlots">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fas fa-info-circle"></i> System Info</h3>
+                <div class="info-box">
+                    <p><strong>Version:</strong> 1.0.0</p>
+                    <p><strong>Status:</strong> <span class="status-active">Active</span></p>
+                    <p><strong>Last Updated:</strong> <span id="lastUpdate">-</span></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1>Parking Lot Management System</h1>
+                <p class="subtitle">Efficient allocation and management of parking spaces</p>
+            </header>
+
+            <!-- Action Cards Row -->
+            <div class="action-row">
+                <!-- Add Parking Slot Card -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-plus-square"></i> Add Parking Slot</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="addSlotForm" class="classic-form">
+                            <div class="form-group">
+                                <label for="slotNo">Slot Number <span class="required">*</span></label>
+                                <input type="text" id="slotNo" class="form-control" required placeholder="Enter slot number (e.g., A1, P-101)">
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="isCovered">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        <i class="fas fa-shield-alt"></i> Covered Parking
+                                    </span>
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="isEVCharging">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        <i class="fas fa-bolt"></i> EV Charging Station
+                                    </span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle"></i> Add Parking Slot
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Park Vehicle Card -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-car"></i> Park Vehicle</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="parkVehicleForm" class="classic-form">
+                            <p class="form-description">Select your parking requirements:</p>
+                            <div class="checkbox-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="needsCover">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        <i class="fas fa-shield-alt"></i> Requires Covered Parking
+                                    </span>
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="needsEV">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        <i class="fas fa-bolt"></i> Requires EV Charging
+                                    </span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-search"></i> Find Available Slot
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Result Display -->
+            <section class="card result-section" id="resultCard" style="display: none;">
+                <div class="card-body" id="resultContent"></div>
+            </section>
+
+            <!-- Parking Slots Display -->
+            <section class="card slots-section">
+                <div class="card-header">
+                    <h2><i class="fas fa-list"></i> All Parking Slots</h2>
+                    <div class="header-actions">
+                        <button class="btn-icon" id="refreshBtn" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="slotsDisplay" class="slots-table-container">
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h3>No Parking Slots Available</h3>
+                            <p>Start by adding your first parking slot using the form above.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 Smart Parking Management System. All rights reserved.</p>
+            <p>Developed for efficient parking space management</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
